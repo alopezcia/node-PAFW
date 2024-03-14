@@ -51,7 +51,11 @@ const leerCSV = (nombreArchivo, propiedad, callback ) => {
 
 // ===================================================================================================================
 const test = () => {
-    leerCSV('log_10.78.42.31.csv',  'Destination address', (datos) => {
+    if( !fs.existsSync('log.csv') ){
+        console.log('No existe fichero log.csv. Genera uno con el monitor de trafico del Panorama ');
+        return;
+    }
+    leerCSV('log.csv',  'Destination address', (datos) => {
         // Ejemplo de uso
         datos.forEach(element => {
             const ip = element.ip;

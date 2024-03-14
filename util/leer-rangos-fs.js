@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 // Función para leer los rangos desde un archivo JSON y filtrar direcciones IPv4
-const leerRangosDesdeJSON = (archivo, ip) => {
+const leerRangosDesdeJSON = (archivo) => {
     try {
         const data = fs.readFileSync(archivo, 'utf8');
         const json = JSON.parse(data);

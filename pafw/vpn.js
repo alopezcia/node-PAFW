@@ -1,31 +1,22 @@
-const axios = require('axios');
-const https = require('https');
-const xml2js = require('xml2js');
-
-const agent = new https.Agent({ rejectUnauthorized: false});
-const axiosInstance = axios.create();
-axiosInstance.defaults.httpsAgent=agent;
-const xml2jsParser = new xml2js.Parser({explicitArray: false});
+const { axiospafw } = require('./axiospafw');
 
 const vpnUsers = async (ip, apikey) => 
 {
-    try{
-        const url = `https://${ip}/api?type=op&cmd=<show><global-protect-gateway><current-user/></global-protect-gateway></show>&key=${apikey}`;
-        console.log( url );
-        const response = await axiosInstance.post( url );
-        const xmlData = response.data;
-        console.log(xmlData);
-        const jsonData = await xml2jsParser.parseStringPromise(xmlData);
-        const {status} = jsonData.response["$"];
-        console.log( JSON.stringify(jsonData.response));
-        return status==='success';
-    } catch (error) {
-        // console.error(`Error al chequear ApiKey: ${error}`);
-        return false;
-    }
+    const entries = await axiospafw(`https://${ip}/api?type=op&cmd=<show><global-protect-gateway><current-user/></global-protect-gateway></show>&key=${apikey}`);
+    if( entries ){
+        const users = entries.entry.map( (entry) => {
+            const username = entry.username;
+            const computer = entry.computer;
+            const ipVirtual = entry["virtual-ip"];
+            const ipPublic = entry["public-ip"];
+            const timeLogin = entry["login-time"];
+            return { username, computer, ipVirtual, ipPublic, timeLogin }
+        });
+        console.log( users );
+        return users;
+    } else 
+        return undefined;
 }
-
-
 
 module.exports = {
     vpnUsers: vpnUsers

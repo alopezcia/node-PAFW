@@ -1,10 +1,11 @@
-"# node-PAFW" 
-Esta es una app desarrollada en node javascript que engloba un conjunto de utilitarios en base a la API proporcionada por PaloAlto para manejar sus Firewalls.
+# node-PAFW
+Esta es una app desarrollada en node JavaScript que engloba un conjunto de utilitarios en base a la API proporcionada por PaloAlto para manejar sus Firewalls.
 
-Para usarla, deberas ejecutar  `npm install` para resolver todas las dependencias.
+Para usarla, deberas ejecutar  **npm install** para resolver todas las dependencias.
 
-Una vez instalada podras usar node app -- help :
+Una vez instalada podras usar _node app -- help_ :
 
+```
 app [command]
 
 Commands:
@@ -16,5 +17,11 @@ Commands:
 Options:
   --version  Show version number                                       [boolean]
   --help     Show help                                                 [boolean]
+```
 
-
+_Ejemplos_
+```
+node app test 
+node app status -i 192.168.1.21 -u admin -p password 
+node app vpnusers -i 192.168.1.21 -u admin -p password 
+```
