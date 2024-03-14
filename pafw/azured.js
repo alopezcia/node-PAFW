@@ -21,14 +21,30 @@ const azured = async (ip, key, deny, period ) => {
 
     const rangos = leerRangosDesdeJSON('rangos.json');
 
+    const rangosUnicos = [];
+    const rangosVistos = {};
+
+    let nr=0;
     datosUnicos.forEach(element => {
         for (const rango of rangos) {
             if (rango.addressPrefixes.some(prefix => ipEnRangoCIDR(element.dst, prefix.cidr))) {
+                // TODO - Se podría filtar por rangos que tengan systemService="AzureIoTHub"
                 console.log(`${element.logid}, ${element.time_received}, ${element.src}, ${element.dst}, ${element.dport}, ${rango.name}, (${rango.regionId})`);
+                const r = rango.name;
+                if( !rangosVistos[r] ){
+                    rangosUnicos.push( { id: rango.regionId, region: rango.region, group: r, systemService: rango.systemService } );
+                    rangosVistos[r]=1;
+                }else 
+                    rangosVistos[r]+=1;
                 break;
             }
         }
     });
+    console.log(rangosVistos );
+    rangosUnicos.forEach( rango => {
+        console.log( rango );
+    });
+
 };
 
 module.exports = {

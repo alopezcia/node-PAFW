@@ -12,6 +12,7 @@ const leerRangosDesdeJSON = (archivo) => {
                     region: item.properties.region,
                     regionId: item.properties.regionId,
                     name: item.name,
+                    systemService: item.properties.systemService,
                     id: item.id,
                     addressPrefixes: item.properties.addressPrefixes
                     .filter(prefix => prefix.includes('.')) // Filtrar direcciones IPv4
