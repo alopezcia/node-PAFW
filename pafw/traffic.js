@@ -16,35 +16,46 @@ const traffic = async (ip, apikey, filter) =>
     console.log( enqueued.msg.line );
     const job = enqueued.job;
 
-    let skip=0;
-    const entradas = [];
-    while( true ){
-        const entries = await axiospafw(`https://${ip}/api?type=log&action=get&job-id=${job}&key=${apikey}`);
-        const count = entries.log.logs["$"].count;
-        const progress = entries.log.logs["$"].progress;
-        const status = entries.job.status;
-        skip = Number(count);
-        // console.log( JSON.stringify(entries.job ), skip );
-        if( skip > 0 ){
-            const entr = entries.log.logs["entry"].map( elemento =>{ 
-                const logid = elemento["$"].logid;
-                const src = elemento["src"];
-                const dst = elemento["dst"];
-                const dport = elemento["dport"];
-                const action = elemento["action"];
-                const time_received = elemento["time_received"];
-				const sessionid = elemento["sessionid"];
-                return { logid, src, dst, dport, action, time_received, sessionid }
-            });
-            entradas.push(...entr);
-        }
-        if( status === 'FIN' && progress === '100' ){
-            break;
-        }
-    }
+	const entradas = [];
+	try{
+		let skip=0;
+		while( true ){
+			const entries = await axiospafw(`https://${ip}/api?type=log&action=get&job-id=${job}&skip=${skip}&key=${apikey}`);
+			const status = entries.job.status;
+			const progress = entries.log.logs["$"].progress;
+			if( entries.log.logs["entry"]  ){
+				const count = Number(entries.log.logs["$"].count);
+				if( count > 1  ){
+					skip += count;
+					console.log( `Status: ${status}, Count: ${count}, Progress: ${progress}, Skip: ${skip}` );
+					const entr = entries.log.logs["entry"].map( elemento =>{ 
+						const logid = elemento["$"].logid;
+						const src = elemento["src"];
+						const dst = elemento["dst"];
+						const dport = elemento["dport"];
+						const action = elemento["action"];
+						const time_received = elemento["time_received"];
+						const sessionid = elemento["sessionid"];
+						return { logid, src, dst, dport, action, time_received, sessionid }
+					});
+					entradas.push(...entr);
+				}
+			} else {
+				await new Promise(r => setTimeout(r, 1000));		// esperamos un segundo para no agobiar al servidor
+			}
+			if( status === 'FIN' && progress === '100' ){
+				break;
+			}
+		}
+
+	}
+	catch( error ) {
+		console.error(error);
+	};
     // {"logs":{"$":{"count":"0","progress":"0"}}}
   
     await axiospafw(`https://${ip}/api?type=log&action=finish&job-id=${job}&key=${apikey}`, true);
+	console.log( `Nº entradas: ${ entradas.length }` );
     return entradas;
 }
 

@@ -75,7 +75,7 @@ const argv = require('yargs')
     .command('status', 'Request a status command from the FW', opts )
     .command('test', 'Test with dowaloaded CSV from PA', {} )
     .command('vpnusers', 'Show VPN Users', opts )
-    .command('traffic', 'Show VPN Users', { ...opts, filter:{ alias: 'f', describe: 'Filter' }} )
+    .command('traffic', 'Capture traffic', { ...opts, filter:{ alias: 'f', describe: 'Filter' }} )
     .help()
     .argv;
 

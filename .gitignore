@@ -25,6 +25,8 @@ dist-ssr
 
 # Desplegados
 .env
+.envAGBAR
+.envAMAEM
 *.txt
 *.csv
 rangos.json
