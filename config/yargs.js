@@ -4,6 +4,7 @@ const { status } = require('../pafw/status');
 const { vpnUsers } = require('../pafw/vpn');
 const { traffic } = require('../pafw/traffic') ;
 const { test } = require('../util/leer-csv');
+const { addazure } = require( '../pafw/addazure');
 
 
 const opts = {
@@ -40,7 +41,22 @@ const optsDeny = {
     }
 }
 
-const doSwitch = async ( cmd, ip, key, filter ='', deny='', period=1 ) => {
+const optsAddAzure = {
+    region: {
+        demand: true,
+        alias: 'r',
+        describe: 'Azure region',
+    },
+    jsonfile: {
+        demand: true,
+        alias: 'j',
+        describe: 'ServiceTags public json'
+    }
+}
+
+const doSwitch = async ( cmd, ip, key, filter ='', deny='', period=1, 
+                        region='AzureIoTHub.NorthEurope', 
+                        jsonfile='ServiceTags_Public_20240311.json'  ) => {
 //    setEnvValue('X_PAN_KEY', key );
 
     switch( cmd ){
@@ -63,6 +79,9 @@ const doSwitch = async ( cmd, ip, key, filter ='', deny='', period=1 ) => {
             const trf = await traffic(ip, key, filter);
             console.log( trf );
             break;
+        case 'addazure':
+            addazure( ip, key, jsonfile, region );
+            break;
         default:
             console.log('Comando no reconocido');
     }
@@ -70,6 +89,7 @@ const doSwitch = async ( cmd, ip, key, filter ='', deny='', period=1 ) => {
 
 
 const argv = require('yargs')
+    .command('addazure', 'Add AzureIoTHub region to PA-FW', { ...opts. ...optsAddAzure } )
     .command('azured', 'Compare PA-FW denials with public cidr lists Azure IoT Hub', { ...opts, ...optsDeny } )
     .command('denials', 'Compare PA-FW denials with public cidr lists Azure IoT Hub', { ...opts, ...optsDeny } )
     .command('status', 'Request a status command from the FW', opts )
