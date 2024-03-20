@@ -1,17 +1,17 @@
 const { leerRangosDesdeJSON } = require('../util/leer-rangos-fs');
 
-const addazure = async (ip, key, jsonfile, region ) => {
+const addazure = async (ip, key, region, jsonfile ) => {
     try {
         const rangos = await leerRangosDesdeJSON(jsonfile);
-        const filtrados = rangos.filter( item => {item.region === region } );
-        console.log( filtrados );
+        const filtrados = rangos.filter( item => item.name === region  );
+        console.log( JSON.stringify(filtrados) );
     } catch( error ){
         console.error( error );
     }
 }
 
 module.exports = {
-    azured: addazure
+    addazure: addazure
 }
 
 

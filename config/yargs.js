@@ -80,7 +80,7 @@ const doSwitch = async ( cmd, ip, key, filter ='', deny='', period=1,
             console.log( trf );
             break;
         case 'addazure':
-            addazure( ip, key, jsonfile, region );
+            addazure( ip, key, region, jsonfile );
             break;
         default:
             console.log('Comando no reconocido');
@@ -89,7 +89,7 @@ const doSwitch = async ( cmd, ip, key, filter ='', deny='', period=1,
 
 
 const argv = require('yargs')
-    .command('addazure', 'Add AzureIoTHub region to PA-FW', { ...opts. ...optsAddAzure } )
+    .command('addazure', 'Add AzureIoTHub region to PA-FW', { ...opts, ...optsAddAzure } )
     .command('azured', 'Compare PA-FW denials with public cidr lists Azure IoT Hub', { ...opts, ...optsDeny } )
     .command('denials', 'Compare PA-FW denials with public cidr lists Azure IoT Hub', { ...opts, ...optsDeny } )
     .command('status', 'Request a status command from the FW', opts )

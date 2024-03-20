@@ -15,7 +15,7 @@ if( cmd === 'test'){
 } 
 // Ñapa para no procesar si no es un comando registrado
 else 
-    if( ! ['azured', 'denials', 'status', 'vpnusers', 'traffic', 'traffic' ].includes(cmd) ){
+    if( ! ['addazure', 'azured', 'denials', 'status', 'vpnusers', 'traffic', 'traffic' ].includes(cmd) ){
         console.log('Comando no reconocido');
         return;
     }
@@ -46,6 +46,8 @@ if( fwXPanKey === 'undefined' ){
 const filter = argv.filter;
 const deny = argv.deny;
 const period = argv.period;
+const region = argv.region;
+const jsonfile = argv.jsonfile;
 
 // 2º Controlar existencia de crendeciales o de token
 // Preferencia existencia de token
@@ -54,7 +56,7 @@ if( fwXPanKey  && fwXPanKey.length > 0   ){
     const c = checkApiKey( fwIP, fwXPanKey );
     c.then( checked => {
         if( checked ){
-            doSwitch( cmd, fwIP, fwXPanKey, filter, deny, period );
+            doSwitch( cmd, fwIP, fwXPanKey, filter, deny, period, region, jsonfile );
             setEnvValue('X_PAN_KEY', fwXPanKey );
             apikeyValido=true;
         } else {
@@ -66,7 +68,7 @@ if( fwXPanKey  && fwXPanKey.length > 0   ){
             }
             const t = getToken( fwIP, fwUsername, fwPassword );
             t.then( token => { 
-                doSwitch( cmd, fwIP, token, filter, deny, period ); 
+                doSwitch( cmd, fwIP, token, filter, deny, period, region, jsonfile ); 
                 setEnvValue('X_PAN_KEY', token );
             }).catch( err => console.log(err));
         }
